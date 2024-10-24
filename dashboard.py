@@ -35,7 +35,7 @@ if st.button("Data"):
         size.append(3713 * random.random())  # Random size for the scatter points
 
 # Create the plot
-fig, ax = plt.subplots(figsize=(4, 4))  # Adjusted size for better display
+fig, ax = plt.subplots(figsize=(16, 16))  # Adjusted size for better display
 ax.add_patch(circle)
 
 # Draw dashed lines from origin to points

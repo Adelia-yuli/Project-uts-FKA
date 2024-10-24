@@ -2,6 +2,7 @@ import streamlit as st
 import matplotlib.pyplot as plt
 from matplotlib.patches import Circle
 import random
+import math  # Import math module for cos and sin
 
 # Set the title and subtitle
 st.title("Fisika Komputasi Awan")
@@ -13,11 +14,11 @@ st.caption("Lingkaran dengan ukuran dan warna acak di dalam lingkaran dengan rad
 # Function to generate random scatter data
 def generate_data(N):
     r = [random.uniform(0, 1) for _ in range(N)]
-    theta = [random.uniform(0, 2 * 3.14159) for _ in range(N)]
+    theta = [random.uniform(0, 2 * math.pi) for _ in range(N)]  # Use math.pi for pi
     size = [random.uniform(10, 50) for _ in range(N)]
     colors = ['#%06X' % random.randint(0, 0xFFFFFF) for _ in range(N)]
-    x = [r[i] * random.cos(theta[i]) for i in range(N)]
-    y = [r[i] * random.sin(theta[i]) for i in range(N)]
+    x = [r[i] * math.cos(theta[i]) for i in range(N)]  # Use math.cos
+    y = [r[i] * math.sin(theta[i]) for i in range(N)]  # Use math.sin
     return x, y, size, colors
 
 # Function to plot the circles, scatter points, and dashed lines

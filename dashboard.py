@@ -6,7 +6,7 @@ from matplotlib.patches import Circle
 
 # Set the title and subtitle
 st.title("Fisika Komputasi Awan")
-st.subheader("Adelia Yuli Santika 😎")
+st.subheader("💗Adelia Yuli Santika💗")
 
 # Create a circle patch
 circle = Circle((0, 0), 1, color='red', fill=False, linewidth=2, linestyle='-', alpha=0.2)

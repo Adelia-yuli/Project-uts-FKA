@@ -1,61 +1,60 @@
 import streamlit as st
+import random
+import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import Circle
-import random
-import math
 
 # Set the title and subtitle
 st.title("Fisika Komputasi Awan")
 st.subheader("Adelia Yuli Santika 😎")
 
-# Function to generate random scatter data
-def generate_data(N):
-    r = [random.uniform(0, 1) for _ in range(N)]  # Random radial distances
-    theta = [random.uniform(0, 2 * math.pi) for _ in range(N)]  # Random angles
-    size = [random.uniform(10, 50) for _ in range(N)]  # Random sizes
-    colors = ['#%06X' % random.randint(0, 0xFFFFFF) for _ in range(N)]  # Random colors
-    x = [r[i] * math.cos(theta[i]) for i in range(N)]  # Convert to x coordinates
-    y = [r[i] * math.sin(theta[i]) for i in range(N)]  # Convert to y coordinates
-    return x, y, size, colors
+# Create a circle patch
+circle = Circle((0, 0), 1, color='red', fill=False, linewidth=2, linestyle='-', alpha=0.2)
 
-# Function to plot the fixed circles, scatter points, and dashed lines
-def plot_figure(x, y, size, colors):
-    fig, ax = plt.subplots(figsize=(6, 6))
+# Initialize lists for storing data points
+x = [0]
+y = [0]
+color = [(0.0, 0.7, 0.0)]
+size = [371]
 
-    # Plot the dashed circles outside the radius 1 (only show outside)
-    outer_circ = Circle((0, 0), 1.0, color='red', fill=False, linestyle='--', linewidth=1)
-    ax.add_patch(outer_circ)
+# Button to generate new random data
+if st.button("Data"):
+    for _ in range(111):
+        x0 = 2 * (random.random() - 0.5)  # Random x between -1 and 1
+        y0 = 2 * (random.random() - 0.5)  # Random y between -1 and 1
+        
+        # Ensure points are within the unit circle
+        if x0**2 + y0**2 > 1:
+            # Adjust y0 to lie on the circle's edge
+            y0 = np.sqrt(1 - x0**2) if y0 > 0 else -np.sqrt(1 - x0**2)
 
-    # Plot dashed lines connecting points to origin
-    for i in range(len(x)):
-        ax.plot([0, x[i]], [0, y[i]], linestyle='--', color='green', linewidth=0.5)
+        # Append the new point data
+        x.append(x0)
+        y.append(y0)
+        color.append((random.random(), random.random(), random.random()))  # Random RGB color
+        size.append(3713 * random.random())  # Random size for the scatter points
 
-    # Plot random scatter points
-    ax.scatter(x, y, s=size, c=colors, alpha=0.6, edgecolors="green", linewidth=1)
+# Create the plot
+fig, ax = plt.subplots(figsize=(8, 8))  # Adjusted size for better display
+ax.add_patch(circle)
 
-    # Set axis limits and properties
-    ax.set_xlim([-1.1, 1.1])
-    ax.set_ylim([-1.1, 1.1])
-    ax.set_aspect('equal')
-    ax.set_xticks([-1, -0.5, 0, 0.5, 1])
-    ax.set_yticks([-1, -0.5, 0, 0.5, 1])
-    ax.grid(True)
+# Draw dashed lines from origin to points
+for i in range(1, len(x)):
+    ax.plot([0, x[i]], [0, y[i]], color='green', linestyle='--', alpha=0.2)
 
-    return fig
+# Scatter plot of random points
+scatter = ax.scatter(x, y, c=color, s=size, alpha=0.5)
 
-# Initial plot
-N = 100  # Number of points
-x, y, size, colors = generate_data(N)  # Generate initial data
+# Set labels and properties
+ax.set_xlabel("x")
+ax.set_ylabel("y")
+ax.set_title('Data Acak yang Berubah Setiap Tombol Ditekan')
+ax.grid(True, linestyle='-.')
+ax.set_xlim([-1, 1])
+ax.set_ylim([-1, 1])
+ax.tick_params(axis='both', labelsize=12)
 
-# Add a description
-st.caption("Lingkaran putus-putus merah hanya di luar radius 1 dan titik acak di dalam lingkaran")
-
-# Create and display the initial figure (with fixed outer circle)
-fig = plot_figure(x, y, size, colors)
+# Display the plot in Streamlit
 st.pyplot(fig)
-
-# Button to regenerate new random data for points (but circle stays the same)
-if st.button('Data'):
-    x, y, size, colors = generate_data(N)  # Generate new points data
-    fig = plot_figure(x, y, size, colors)  # Plot with new data
-    st.pyplot(fig)  # Display updated figure
+st.caption("Lingkaran dengan ukuran dan warna acak dan tersebar di dalam lingkaran dengan radius 1")
+st.divider()

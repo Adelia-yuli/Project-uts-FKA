@@ -35,15 +35,15 @@ if st.button("Data"):
         size.append(3713 * random.random())  # Random size for the scatter points
 
 # Create the plot
-fig, ax = plt.subplots(figsize=(8, 8))  # Adjusted size for better display
+fig, ax = plt.subplots(figsize=(24, 24))  # Adjusted size for better display
 ax.add_patch(circle)
 
 # Draw dashed lines from origin to points
 for i in range(1, len(x)):
-    ax.plot([0, x[i]], [0, y[i]], color='green', linestyle='--', alpha=0.2)
+    ax.plot([0, x[i]], [0, y[i]], color='blue', linestyle='--', alpha=0.1)
 
 # Scatter plot of random points
-scatter = ax.scatter(x, y, c=color, s=size, alpha=0.5)
+scatter = ax.scatter(x, y, c=color, s=size, alpha=0.3)
 
 # Set labels and properties
 ax.set_xlabel("x")

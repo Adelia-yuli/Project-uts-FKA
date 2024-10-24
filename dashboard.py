@@ -22,10 +22,9 @@ def generate_data(N):
 def plot_figure(x, y, size, colors):
     fig, ax = plt.subplots(figsize=(6, 6))
 
-    # Plot the concentric circles (remain unchanged)
-    for radius in [0.25, 0.5, 0.75, 1.0]:
-        circ = Circle((0, 0), radius, color='red', fill=False, linestyle='--', linewidth=1)
-        ax.add_patch(circ)
+    # Plot the dashed circles outside the radius 1 (only show outside)
+    outer_circ = Circle((0, 0), 1.0, color='red', fill=False, linestyle='--', linewidth=1)
+    ax.add_patch(outer_circ)
 
     # Plot dashed lines connecting points to origin
     for i in range(len(x)):
@@ -49,12 +48,14 @@ N = 100  # Number of points
 x, y, size, colors = generate_data(N)  # Generate initial data
 
 # Add a description
-st.caption("Lingkaran dengan ukuran dan warna acak dan tersebar didalam lingkaran dengan radius 1")
-# Button to regenerate new random data for points (but circles stay the same)
+st.caption("Lingkaran putus-putus merah hanya di luar radius 1 dan titik acak di dalam lingkaran")
+
+# Create and display the initial figure (with fixed outer circle)
+fig = plot_figure(x, y, size, colors)
+st.pyplot(fig)
+
+# Button to regenerate new random data for points (but circle stays the same)
 if st.button('Data'):
     x, y, size, colors = generate_data(N)  # Generate new points data
     fig = plot_figure(x, y, size, colors)  # Plot with new data
-    st.pyplot(fig)
-# Create and display the initial figure (with fixed circles)
-fig = plot_figure(x, y, size, colors)
-st.pyplot(fig)
+    st.pyplot(fig)  # Display updated figure

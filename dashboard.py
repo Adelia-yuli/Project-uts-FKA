@@ -7,60 +7,85 @@ st.title("Fisika Komputasi Awan")
 st.subheader("Adelia Yuli Santika 😎")
 
 # Add a description
-st.caption("Lingkaran dengan ukuran dan warna acak dan tersebar didalam lingkaran dengan radius 1")
+st.caption("Data acak berubah setiap tombol ditekan")
 
-# Create a button to generate new random data
-if st.button('Data'):
-    # Generate random data
-    N = 100
-    np.random.seed(42)
+# Function to generate random scatter data
+def generate_data(N):
     r = np.random.rand(N)
     theta = np.random.rand(N) * 2 * np.pi
     size = np.random.rand(N) * 50
     color = np.random.rand(N)
-    
-    # Convert to cartesian coordinates
     x = r * np.cos(theta)
     y = r * np.sin(theta)
-    
-    # Create scatter plot using Plotly Graph Objects
-    fig = go.Figure()
-    
-    # Scatter plot for random points
+    return x, y, size, color
+
+# Initial plot
+N = 100
+x, y, size, color = generate_data(N)
+
+# Create the figure
+fig = go.Figure()
+
+# Plot the scatter points
+scatter = go.Scatter(
+    x=x, y=y,
+    mode='markers',
+    marker=dict(
+        size=size,
+        color=color,
+        opacity=0.6,
+        colorscale='Viridis',
+        line=dict(width=1, color='green')
+    )
+)
+fig.add_trace(scatter)
+
+# Plot the dashed lines from each point to the origin
+for i in range(len(x)):
     fig.add_trace(go.Scatter(
-        x=x,
-        y=y,
-        mode='markers',
-        marker=dict(
-            size=size,
-            color=color,
-            opacity=0.6,
-            colorscale='Viridis',
-            line=dict(width=1, color='green')
-        )
+        x=[0, x[i]], y=[0, y[i]],
+        mode='lines',
+        line=dict(color='green', width=1, dash='dash'),
+        showlegend=False
     ))
 
-    # Add circular boundary (radius 1)
-    fig.add_shape(
-        type="circle",
-        xref="x", yref="y",
-        x0=-1, y0=-1, x1=1, y1=1,
-        line=dict(color="red", width=1),
-    )
+# Draw concentric circles with radius intervals of 0.25
+for r in np.arange(0.25, 1.1, 0.25):
+    fig.add_shape(type="circle", xref="x", yref="y",
+                  x0=-r, y0=-r, x1=r, y1=r,
+                  line=dict(color="red", width=1, dash="dot"))
 
-    # Set axis properties to create a uniform circle
-    fig.update_xaxes(range=[-1.1, 1.1], zeroline=False)
-    fig.update_yaxes(range=[-1.1, 1.1], zeroline=False, scaleanchor="x", scaleratio=1)
+# Set axis properties to create a uniform circle
+fig.update_xaxes(range=[-1.1, 1.1], zeroline=False)
+fig.update_yaxes(range=[-1.1, 1.1], zeroline=False, scaleanchor="x", scaleratio=1)
+
+# Set gridlines and layout properties
+fig.update_layout(
+    width=700,
+    height=700,
+    title="Data Acak yang berubah setiap tombol ditekan",
+    xaxis_showgrid=True,
+    yaxis_showgrid=True,
+    showlegend=False,
+)
+
+# Display the initial plot
+plot = st.plotly_chart(fig)
+
+# Button to regenerate new random data
+if st.button('Data'):
+    x, y, size, color = generate_data(N)
     
-    # Set gridlines and layout properties
-    fig.update_layout(
-        width=700,
-        height=700,
-        title="Data Acak yang berubah setiap tombol ditekan",
-        xaxis_showgrid=True,
-        yaxis_showgrid=True,
-        showlegend=False,
-    )
-    
-    # Display the plot
-    st.plotly_chart(fig)
+    # Update scatter points
+    fig.data[0].x = x
+    fig.data[0].y = y
+    fig.data[0].marker.size = size
+    fig.data[0].marker.color = color
+
+    # Update dashed lines
+    for i in range(len(x)):
+        fig.data[i + 1].x = [0, x[i]]
+        fig.data[i + 1].y = [0, y[i]]
+
+    # Update the plot
+    plot.plotly_chart(fig)

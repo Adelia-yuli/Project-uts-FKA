@@ -5,7 +5,7 @@ import pandas as pd
 
 # Set the title and subtitle
 st.title("Fisika Komputasi Awan")
-st.subheader("Nugroho Adi Pramono 😎")
+st.subheader("Adelia Yuli Santika 😎")
 
 # Add a description
 st.caption("Lingkaran dengan ukuran dan warna acak dan tersebar didalam lingkaran dengan radius 1")

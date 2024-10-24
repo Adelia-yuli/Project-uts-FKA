@@ -7,11 +7,6 @@ import math
 # Set the title and subtitle
 st.title("Fisika Komputasi Awan")
 st.subheader("Adelia Yuli Santika 😎")
-# Button to regenerate new random data for points (but circles stay the same)
-if st.button('Data'):
-    x, y, size, colors = generate_data(N)  # Generate new points data
-    fig = plot_figure(x, y, size, colors)  # Plot with new data
-    st.pyplot(fig)
 
 # Function to generate random scatter data
 def generate_data(N):
@@ -55,7 +50,11 @@ x, y, size, colors = generate_data(N)  # Generate initial data
 
 # Add a description
 st.caption("Lingkaran dengan ukuran dan warna acak dan tersebar didalam lingkaran dengan radius 1")
-
+# Button to regenerate new random data for points (but circles stay the same)
+if st.button('Data'):
+    x, y, size, colors = generate_data(N)  # Generate new points data
+    fig = plot_figure(x, y, size, colors)  # Plot with new data
+    st.pyplot(fig)
 # Create and display the initial figure (with fixed circles)
 fig = plot_figure(x, y, size, colors)
 st.pyplot(fig)

@@ -1,91 +1,61 @@
 import streamlit as st
-import plotly.graph_objects as go
-import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.patches import Circle
+import random
 
 # Set the title and subtitle
 st.title("Fisika Komputasi Awan")
 st.subheader("Adelia Yuli Santika 😎")
 
 # Add a description
-st.caption("Data acak berubah setiap tombol ditekan")
+st.caption("Lingkaran dengan ukuran dan warna acak di dalam lingkaran dengan radius 1, terdapat garis putus-putus ke titik pusat")
 
 # Function to generate random scatter data
 def generate_data(N):
-    r = np.random.rand(N)
-    theta = np.random.rand(N) * 2 * np.pi
-    size = np.random.rand(N) * 50
-    color = np.random.rand(N)
-    x = r * np.cos(theta)
-    y = r * np.sin(theta)
-    return x, y, size, color
+    r = [random.uniform(0, 1) for _ in range(N)]
+    theta = [random.uniform(0, 2 * 3.14159) for _ in range(N)]
+    size = [random.uniform(10, 50) for _ in range(N)]
+    colors = ['#%06X' % random.randint(0, 0xFFFFFF) for _ in range(N)]
+    x = [r[i] * random.cos(theta[i]) for i in range(N)]
+    y = [r[i] * random.sin(theta[i]) for i in range(N)]
+    return x, y, size, colors
+
+# Function to plot the circles, scatter points, and dashed lines
+def plot_figure(x, y, size, colors):
+    fig, ax = plt.subplots(figsize=(6, 6))
+    
+    # Plot concentric circles with intervals of 0.25
+    for radius in [0.25, 0.5, 0.75, 1.0]:
+        circ = Circle((0, 0), radius, color='red', fill=False, linestyle='--', linewidth=1)
+        ax.add_patch(circ)
+    
+    # Plot dashed lines connecting points to origin
+    for i in range(len(x)):
+        ax.plot([0, x[i]], [0, y[i]], linestyle='--', color='green', linewidth=0.5)
+    
+    # Plot random scatter points
+    ax.scatter(x, y, s=size, c=colors, alpha=0.6, edgecolors="green", linewidth=1)
+
+    # Set axis limits and properties
+    ax.set_xlim([-1.1, 1.1])
+    ax.set_ylim([-1.1, 1.1])
+    ax.set_aspect('equal')
+    ax.set_xticks([-1, -0.5, 0, 0.5, 1])
+    ax.set_yticks([-1, -0.5, 0, 0.5, 1])
+    ax.grid(True)
+
+    return fig
 
 # Initial plot
 N = 100
-x, y, size, color = generate_data(N)
+x, y, size, colors = generate_data(N)
 
-# Create the figure
-fig = go.Figure()
-
-# Plot the scatter points
-scatter = go.Scatter(
-    x=x, y=y,
-    mode='markers',
-    marker=dict(
-        size=size,
-        color=color,
-        opacity=0.6,
-        colorscale='Viridis',
-        line=dict(width=1, color='green')
-    )
-)
-fig.add_trace(scatter)
-
-# Plot the dashed lines from each point to the origin
-for i in range(len(x)):
-    fig.add_trace(go.Scatter(
-        x=[0, x[i]], y=[0, y[i]],
-        mode='lines',
-        line=dict(color='green', width=1, dash='dash'),
-        showlegend=False
-    ))
-
-# Draw concentric circles with radius intervals of 0.25
-for r in np.arange(0.25, 1.1, 0.25):
-    fig.add_shape(type="circle", xref="x", yref="y",
-                  x0=-r, y0=-r, x1=r, y1=r,
-                  line=dict(color="red", width=1, dash="dot"))
-
-# Set axis properties to create a uniform circle
-fig.update_xaxes(range=[-1.1, 1.1], zeroline=False)
-fig.update_yaxes(range=[-1.1, 1.1], zeroline=False, scaleanchor="x", scaleratio=1)
-
-# Set gridlines and layout properties
-fig.update_layout(
-    width=700,
-    height=700,
-    title="Data Acak yang berubah setiap tombol ditekan",
-    xaxis_showgrid=True,
-    yaxis_showgrid=True,
-    showlegend=False,
-)
-
-# Display the initial plot
-plot = st.plotly_chart(fig)
+# Create and display the initial figure
+fig = plot_figure(x, y, size, colors)
+st.pyplot(fig)
 
 # Button to regenerate new random data
 if st.button('Data'):
-    x, y, size, color = generate_data(N)
-    
-    # Update scatter points
-    fig.data[0].x = x
-    fig.data[0].y = y
-    fig.data[0].marker.size = size
-    fig.data[0].marker.color = color
-
-    # Update dashed lines
-    for i in range(len(x)):
-        fig.data[i + 1].x = [0, x[i]]
-        fig.data[i + 1].y = [0, y[i]]
-
-    # Update the plot
-    plot.plotly_chart(fig)
+    x, y, size, colors = generate_data(N)
+    fig = plot_figure(x, y, size, colors)
+    st.pyplot(fig)
